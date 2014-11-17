@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf8"?>
+
+<project name="blank"
+         default="project"
+         xmlns:cs="antlib:com.puppycrawl.tools.checkstyle">
+    
+    <!-- チェック対象のファイル。デフォルトではすべてのファイルを対象とする。 -->
+    <property name="targetfiles" value="**/*" />
+
+    <!-- "checkstyle"タスクを定義する -->
+    <taskdef resource="checkstyletask.properties"
+             classpath="libs/checkstyle-5.7-all.jar"/>
+
+    <target name="project">
+        <checkstyle configURL="https://raw.githubusercontent.com/verve-inc/CodingStyleGuides/master/Tools/Checkstyle/verve_java.xml">
+            <fileset 
+              dir="src" 
+              includes="${targetfiles}">
+                <!-- 拡張子が".java"のファイルだけをチェックの対象とする。 -->
+                <filename name="**/*.java" />
+            </fileset>
+            <formatter type="xml" toFile="result.xml"/>
+        </checkstyle>
+    </target>
+</project>
+
