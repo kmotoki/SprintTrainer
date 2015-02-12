@@ -1,8 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="title_of_main">Main</string>
     <string name="app_name">Sprint Trainer</string>
     <string name="action_settings">Settings</string>
     <string name="start">Start!</string>
+    <string name="title_of_delay_for_onYourMark">Delay for \"On your mark\"</string>
+    <string name="summary_of_delay_for_onYourMark">Choose delay time between tapping start button and \"On your mark\".</string>
+    <string name="title_of_delay_for_set">Delay for \"Set\"</string>
+    <string name="summary_of_delay_for_set">Choose delay time between \"On your mark\" and \"Set\".</string>
+    <string name="title_of_delay_for_bang">Delay for \"Bang!\"</string>
+    <string name="summary_of_delay_for_bang">Choose delay time between \"Set\" and \"Bang!\".</string>
+    <string name="title_of_delay_mode_of_bang">Delay mode of \"Bang!\"</string>
+    <string name="summary_of_delay_mode_of_bang">If turn on this switch, The delay between \"Set\" and \"Bang!\" is random.</string>
+    <string name="title_of_delay_for_bang_specified">Delay for \"Bang!\" (specified)</string>
+    <string name="summary_of_delay_for_bang_specified">Choose specified delay time between \"Set\" and \"Bang!\".</string>
+    <string name="title_of_other">Other</string>
+    <string name="title_of_language">Language</string>
+    <string name="summary_of_language">Choose language.</string>
+    <string name="label_record_button">Record</string>
+    <string name="title_activity_camera">CameraActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_fullscreen">FullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 
 </resources>

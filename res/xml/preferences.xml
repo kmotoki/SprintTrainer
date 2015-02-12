@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/title_of_main">
+        <ListPreference
+            android:key="delay_for_onYourMark"
+            android:title="@string/title_of_delay_for_onYourMark"
+            android:summary="@string/summary_of_delay_for_onYourMark"
+            android:entries="@array/entries_of_delay_for_onYourMark"
+            android:entryValues="@array/entryValues_of_delay_for_onYourMark"
+            android:defaultValue="5" />
+        <ListPreference
+            android:key="delay_for_set"
+            android:title="@string/title_of_delay_for_set"
+            android:summary="@string/summary_of_delay_for_set"
+            android:entries="@array/entries_of_delay_for_set"
+            android:entryValues="@array/entryValues_of_delay_for_set"
+            android:defaultValue="5" />
+        <PreferenceScreen
+            android:title="@string/title_of_delay_for_bang"
+            android:summary="@string/summary_of_delay_for_bang">
+            <SwitchPreference
+                android:key="delay_mode_of_bang"
+                android:title="@string/title_of_delay_mode_of_bang"
+                android:summary="@string/summary_of_delay_mode_of_bang"
+                android:defaultValue="false" />
+            <jp.ne.takatoo.sprinttrainer.SeekBarPreference
+                android:key="@string/title_of_delay_for_bang_specified"
+                android:title="@string/summary_of_delay_for_bang_specified"
+                android:max="10" />
+        </PreferenceScreen>
+    </PreferenceCategory>
+        
+    <PreferenceCategory android:title="@string/title_of_other">
+        <ListPreference
+            android:key="language"
+            android:title="@string/title_of_language"
+            android:summary="@string/summary_of_language"
+            android:entries="@array/entries_of_language"
+            android:entryValues="@array/entryValues_of_language"
+            android:defaultValue="0" />
+    </PreferenceCategory>
+</PreferenceScreen>

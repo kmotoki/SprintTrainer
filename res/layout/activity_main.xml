@@ -18,4 +18,14 @@
         android:onClick="onClickButtonStart"
         android:text="@string/start" />
 
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/button1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="68dp"
+        android:onClick="onClickButtonRecord"
+        android:text="@string/label_record_button" />
+
 </RelativeLayout>
