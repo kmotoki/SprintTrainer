@@ -1,11 +1,12 @@
 package jp.ne.takatoo.sprinttrainer;
 
 import java.io.IOException;
-import java.util.List;
 
 import android.hardware.Camera;
-import android.hardware.Camera.Size;
+import android.hardware.Camera.CameraInfo;
+import android.media.MediaRecorder;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -13,16 +14,20 @@ import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.Toast;
 
 public class CameraActivity extends ActionBarActivity {
 
     private static final String TAG = CameraActivity.class.getSimpleName();
 
+    private static final String OUTPUT_FILE =
+            Environment.getExternalStorageDirectory().getPath() + "/sample.mp4";
+
     private Camera camera = null;
+    private MediaRecorder recorder = null;
     private SurfaceView surfaceView = null;
-    private SurfaceHolder surfaceHolder = null;
+
+    private boolean isRecording = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,10 +38,23 @@ public class CameraActivity extends ActionBarActivity {
         SurfaceHolder surfaceHolder = surfaceView.getHolder();
         surfaceHolder.addCallback(callBack);
 
-        // TODO Error handling
-        camera = Camera.open(1);
-        
         surfaceView.setOnClickListener(onClickListener);
+
+        final int frontCameraId = getFrontCameraId();
+        if (frontCameraId < 0) {
+            Toast.makeText(this, "This device doesn't have front camera.", Toast.LENGTH_LONG).show();
+            this.finish();
+        }
+        
+        camera = Camera.open(frontCameraId);
+        camera.unlock();
+        
+        recorder = new MediaRecorder();
+        recorder.setCamera(camera);
+//        recorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT);
+        recorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
+        recorder.setVideoEncoder(MediaRecorder.VideoEncoder.DEFAULT);
+        recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
     }
 
     @Override
@@ -57,23 +75,45 @@ public class CameraActivity extends ActionBarActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+    
+    private static int getFrontCameraId() {
+        final int numberOfCameras = Camera.getNumberOfCameras();
+        Log.d(TAG, "numberOfCamera = " + numberOfCameras);
+        
+        final CameraInfo cameraInfo = new CameraInfo();
+        for (int i = 0; i < numberOfCameras; i++) {
+            Camera.getCameraInfo(i, cameraInfo);
+            if (cameraInfo.facing == CameraInfo.CAMERA_FACING_FRONT) {
+                Log.d(TAG, "Front camera id = " + i);
+                return i;
+            }
+        }
+        
+        Log.i(TAG, "Front camera is not exists");
+        return -1;
+    }
 
     private SurfaceHolder.Callback callBack = new SurfaceHolder.Callback() {
 
         @Override
         public void surfaceDestroyed(SurfaceHolder holder) {
             Log.d(TAG, "surfaceDestroyed");
-            camera.setPreviewCallback(null);
-            camera.stopPreview();
-            camera.release();
         }
 
         @Override
         public void surfaceCreated(SurfaceHolder holder) {
             Log.d(TAG, "surfaceCreated");
+
+            Log.d(TAG, OUTPUT_FILE);
+            recorder.setOutputFile(OUTPUT_FILE);
+//            recorder.setVideoFrameRate(30);
+//            recorder.setVideoSize(320, 240);
+
+            recorder.setPreviewDisplay(holder.getSurface());
+
             try {
-                camera.setPreviewDisplay(holder);
-            } catch (IOException e) {
+                recorder.prepare();
+            } catch (IllegalStateException | IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
@@ -82,36 +122,26 @@ public class CameraActivity extends ActionBarActivity {
         @Override
         public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
             // TODO Auto-generated method stub
-            Log.d(TAG, "surfaceChanged");
-
-            surfaceHolder = holder;
-
-            camera.stopPreview();
-            Camera.Parameters parameters = camera.getParameters();
-            List<Size> supportedPreviewSizes = parameters.getSupportedPreviewSizes();
-            Size smallestSize = supportedPreviewSizes.get(supportedPreviewSizes.size() - 1);
-
-            Log.d(TAG, "Before: width = " + width + ", height = " + height);
-            Log.d(TAG, "After: width = " + smallestSize.width + ", height = " + smallestSize.height);
-            parameters.setPreviewSize(smallestSize.width, smallestSize.height);
-            
-            LayoutParams layoutParams = surfaceView.getLayoutParams();
-            layoutParams.width = smallestSize.width;
-            layoutParams.height = smallestSize.height;
-            
-            surfaceView.setLayoutParams(layoutParams);
-            
-            camera.startPreview();
         }
     };
-    
+
     private View.OnClickListener onClickListener = new View.OnClickListener() {
-        
         @Override
         public void onClick(View v) {
-            // TODO Auto-generated method stub
-            Toast.makeText(CameraActivity.this, "onClick", Toast.LENGTH_LONG).show();
-            
+            if (isRecording) {
+                Log.d(TAG, "Stop recording");
+                recorder.stop();
+                recorder.reset();
+                recorder.release();
+                isRecording = false;
+                
+                camera.lock();
+                camera.release();
+            } else {
+                Log.d(TAG, "Start recording");
+                recorder.start();
+                isRecording = true;
+            }
         }
     };
 }
